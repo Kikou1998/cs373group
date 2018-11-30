@@ -47,13 +47,6 @@ x = np.delete(x, 0, 1)  # delete 1st column of x
 # the result of the game plus the following three columns which are about general game info are removed.
 
 
-# alg = SVC(kernel='rbf', C=1, gamma=0.1)
-# alg.fit(x, y)
-# y_pred = alg.predict(x)
-# err = np.mean(y != y_pred)
-
-# print "err:"
-# print err
 positive_y = []
 negative_y = []
 for i in range(0, 2000):
@@ -98,11 +91,21 @@ print "Results of hyperparameter tuning:"
 print "C: ", best_C
 print "gamma: ", best_gamma
 
-# y_pred = np.zeros(len(x), int)
+y_pred = np.zeros(len(x), int)
 alg = SVC(C=best_C, kernel="rbf", gamma=best_gamma)
 alg.fit(x[samples_fold2], y[samples_fold2])
-y_pred = alg.predict(x[samples_fold1])
-# y_pred is the list of predicted label of x in samples_fold1
-err = np.mean(y[samples_fold1] != y_pred)
+y_pred[samples_fold1] = alg.predict(x[samples_fold1])
 
-print "error: ", err
+error1 = np.mean(y[samples_fold1] != y_pred[samples_fold1])
+
+print "error: ", error1
+# y_pred is the list of predicted label of x in samples_fold1
+# err = np.mean(y[samples_fold1] != y_pred)
+
+alg = SVC(C=best_C, kernel="rbf", gamma=best_gamma)
+alg.fit(x[samples_fold1], y[samples_fold1])
+y_pred[samples_fold2] = alg.predict(x[samples_fold2])
+
+error = np.mean(y != y_pred)
+
+print "error: ", error
